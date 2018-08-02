@@ -3,9 +3,10 @@ var keys = require("./keys");
 //console.log(keys);
 var Spotify = require("node-spotify-api");
 var Twitter = require("twitter");
+var request = require("request");
+
 var spotify = new Spotify(keys.spotify);
 var client = new Twitter(keys.twitter);
-
 
 
 var programToRun = process.argv[2];
@@ -16,7 +17,7 @@ if(programToRun == "my-tweets"){
 } else if (programToRun == 'spotify-this-song'){
 	spotifyThisSong(programAction);
 } else if (programToRun == 'movie-this'){
-	movieThis();
+	movieThis(programAction);
 } else if(programToRun == 'do-what-it-says'){
 	doWhatItSays();
 } else {
@@ -65,9 +66,35 @@ function spotifyThisSong(query){
     });
 }
 
-function movieThis(){
-	console.log("Run movie program");
+function movieThis(movieQuery){
+	if(!movieQuery) {
+		movieQuery = "mr nobody";
+	}
+	// Then run a request to the OMDB API with the movie specified
+	request("http://www.omdbapi.com/?t=" + movieQuery + "&y=&plot=short&apikey=trilogy", function(error, response, body) {
+
+	   // If the request is successful (i.e. if the response status code is 200)
+	   if (!error && response.statusCode === 200) {
+
+	    // Parse the body of the site and recover just the imdbRating
+	    // (Note: The syntax below for parsing isn't obvious. Just spend a few moments dissecting it).
+	    console.log("Title of the movie: " + JSON.parse(body).Title);
+	    console.log("Year the movie came out: " + JSON.parse(body).Year);
+	    console.log("IMDB Rating of the movie: " + JSON.parse(body).imdbRating);
+	    console.log("Rotten Tomatoes Rating of the movie: " + JSON.parse(body).Ratings[0].Value);
+	    console.log("Country where the movie was produced: " + JSON.parse(body).Country);
+	    console.log("Language of the movie: " + JSON.parse(body).Language);
+	    console.log("Plot of the movie: " + JSON.parse(body).Plot);
+	    console.log("Actors in the movie: " + JSON.parse(body).Actors);
+	    console.log("");
+	   }
+   });
 }
+
+
+
+
+
 
 function doWhatItSays(){
 	console.log("Run program");
