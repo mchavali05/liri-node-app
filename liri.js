@@ -4,6 +4,7 @@ var keys = require("./keys");
 var Spotify = require("node-spotify-api");
 var Twitter = require("twitter");
 var request = require("request");
+var fs = require("fs");
 
 var spotify = new Spotify(keys.spotify);
 var client = new Twitter(keys.twitter);
@@ -21,7 +22,7 @@ if(programToRun == "my-tweets"){
 } else if(programToRun == 'do-what-it-says'){
 	doWhatItSays();
 } else {
-	console.log("I didn't understand this!");
+	console.log("I didn't understand this, try again!");
 }
 
 function myTweets(){
@@ -106,7 +107,20 @@ function movieThis(movieQuery){
 
 
 function doWhatItSays(){
-	console.log("Run program");
+	fs.readFile("random.txt", "utf-8", function(error, data) {
+		if (error) {
+	    	return console.log(error);
+	  	}
+
+	  	var dataArr = data.split(",");
+	  	var liriCommand = dataArr[0];
+	  	var randomText = dataArr[1];
+	  	//console.log(dataArr);
+	  	if(liriCommand === "spotify-this-song") {
+			spotifyThisSong(randomText);
+		} 
+
+	});
 }
 
 
