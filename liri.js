@@ -101,11 +101,6 @@ function movieThis(movieQuery){
    	}	
 }
 
-
-
-
-
-
 function doWhatItSays(){
 	fs.readFile("random.txt", "utf-8", function(error, data) {
 		if (error) {
